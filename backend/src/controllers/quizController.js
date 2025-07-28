@@ -8,7 +8,7 @@ class QuizController {
   // Generate a new quiz
   async generateQuiz(req, res) {
     try {
-      const { topic, difficulty, mcqs = 0, bool = 0, oneLine = 0, para = 0 } = req.body;
+      const { topic, difficulty, questions, mcqs = 0, bool = 0, oneLine = 0, para = 0 } = req.body;
 
       // Validate input
       if (!topic || !difficulty) {
@@ -18,7 +18,21 @@ class QuizController {
         });
       }
 
-      if (mcqs + bool + oneLine + para === 0) {
+      // Handle both formats: direct fields or nested questions object
+      let mcqCount = mcqs;
+      let boolCount = bool;
+      let oneLineCount = oneLine;
+      let paraCount = para;
+
+      // If questions object is provided, use it
+      if (questions && typeof questions === 'object') {
+        mcqCount = questions.mcq || questions.mcqs || 0;
+        boolCount = questions.bool || questions.trueFalse || 0;
+        oneLineCount = questions.oneLine || questions.oneLiner || 0;
+        paraCount = questions.para || questions.paragraph || 0;
+      }
+
+      if (mcqCount + boolCount + oneLineCount + paraCount === 0) {
         return res.status(400).json({
           success: false,
           message: 'At least one question type must be selected'
@@ -26,10 +40,10 @@ class QuizController {
       }
 
       const questionTypes = [
-        { type: 'mcqs', count: mcqs },
-        { type: 'bool', count: bool },
-        { type: 'oneLine', count: oneLine },
-        { type: 'para', count: para }
+        { type: 'mcqs', count: mcqCount },
+        { type: 'bool', count: boolCount },
+        { type: 'oneLine', count: oneLineCount },
+        { type: 'para', count: paraCount }
       ];
 
       const quizData = {
@@ -42,7 +56,7 @@ class QuizController {
           oneLiner: [],
           paragraph: []
         },
-        totalQuestions: mcqs + bool + oneLine + para,
+        totalQuestions: mcqCount + boolCount + oneLineCount + paraCount,
         createdAt: new Date().toISOString()
       };
 
