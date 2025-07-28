@@ -1,0 +1,27 @@
+{
+  "name": "test-generator-ai",
+  "version": "1.0.0",
+  "description": "AI-powered quiz generation platform using Google Gemini",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "keywords": [
+    "quiz",
+    "test-generator",
+    "ai",
+    "gemini",
+    "education",
+    "react",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 
